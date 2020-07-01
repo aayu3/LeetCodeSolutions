@@ -13,8 +13,8 @@ package problem2;
 
 class Solution {
     public static void main(String[] args) {
-        ListNode test1 = convertToListNode(9);
-        ListNode test2 = convertToListNode(9);
+        ListNode test1 = convertToListNode(1);
+        ListNode test2 = convertToListNode(99);
         ListNode result = addTwoNumbers(test1, test2);
         System.out.println(convertToInt(result));
 
@@ -94,6 +94,9 @@ class Solution {
             nextDigitOfSum.val = (carry + longerNum.val) % 10;
             carry = carryCalc(longerNum.val, 0, carry);
             longerNum = longerNum.next;
+        }
+        if (carry != 0) {
+            nextDigitOfSum.next = new ListNode(carry,null);
         }
 
 
