@@ -21,13 +21,13 @@ class Solution {
     }
 
     public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        //will be adding in place on top of l1, so l1Incr is the return value
+        // will be adding in place on top of l1, so l1Incr is the return value
         ListNode l1Incr = l1;
         ListNode l2Incr = l2;
         ListNode pointer = new ListNode(0,l1Incr);
         int carry = 0;
-        //reason I always check whether foo.next != null instead of foo != null is i want to be able to set foo.next, if foo is null
-        //then foo.next will raise an error
+        // reason I always check whether foo.next != null instead of foo != null is i want to be able to set foo.next, if foo is null
+        // then foo.next will raise an error
         while (l1Incr.next != null) {
             if (l2Incr == null) {
                 while (l1Incr.next != null) {
