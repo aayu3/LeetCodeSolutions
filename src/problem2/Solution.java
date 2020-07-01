@@ -13,8 +13,8 @@ package problem2;
 
 class Solution {
     public static void main(String[] args) {
-        ListNode test1 = convertToListNode(1334124);
-        ListNode test2 = convertToListNode(2);
+        ListNode test1 = convertToListNode(9);
+        ListNode test2 = convertToListNode(9);
         ListNode result = addTwoNumbers(test1, test2);
         System.out.println(convertToInt(result));
 
@@ -101,7 +101,7 @@ class Solution {
     }
     private static int carryCalc(int num1, int num2, int prevCarry) {
         if (num1 + num2 + prevCarry >= 10) {
-            return num1+num2 + prevCarry-9;
+            return (num1+num2 + prevCarry)/10;
         }
         return 0;
     }
