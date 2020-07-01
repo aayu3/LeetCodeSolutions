@@ -13,100 +13,74 @@ package problem2;
 
 class Solution {
     public static void main(String[] args) {
-        ListNode test1 = convertToListNode(1);
-        ListNode test2 = convertToListNode(99);
+        ListNode test1 = convertToListNode(2);
+        ListNode test2 = convertToListNode(9);
         ListNode result = addTwoNumbers(test1, test2);
         System.out.println(convertToInt(result));
 
     }
+
     public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        ListNode firstNumDigit = l1;
-        ListNode secondNumDigit = l2;
-        int carry = carryCalc(firstNumDigit.val, secondNumDigit.val, /*prevcarry=*/0);
-        ListNode sum = new ListNode((firstNumDigit.val + secondNumDigit.val) % 10);
-        //base case where both numbers are 1 digit long
-        ListNode nextDigitOfSum = null;
-        if (firstNumDigit.next == null && secondNumDigit.next == null) {
-            nextDigitOfSum = null;
-            if (carry != 0) {
-                nextDigitOfSum = new ListNode(carry, null);
-            }
-            sum.next = nextDigitOfSum;
-            return sum;
-        }
-        sum.next = nextDigitOfSum;
-        firstNumDigit = firstNumDigit.next;
-        secondNumDigit = secondNumDigit.next;
-        //both numbers are length 2 or greater
-        if (firstNumDigit != null && secondNumDigit != null){
-            nextDigitOfSum = new ListNode();
-            nextDigitOfSum.val = (carry + firstNumDigit.val + secondNumDigit.val) % 10;
-            carry = carryCalc(firstNumDigit.val,secondNumDigit.val, carry);
-            sum.next = nextDigitOfSum;
-            //add until one number ends, we use the check inside of the loop because of intricacies regarding nextDigitOfSum, see later comment
-            while (true) {
-                //if both numbers ended
-                if (firstNumDigit.next == null && secondNumDigit.next == null) {
-                    nextDigitOfSum.next = null;
-                    if (carry != 0) {
-                        nextDigitOfSum.next = new ListNode(carry, null);
+        //will be adding in place on top of l1, so l1Incr is the return value
+        ListNode l1Incr = l1;
+        ListNode l2Incr = l2;
+        ListNode pointer = new ListNode(0,l1Incr);
+        int carry = 0;
+        //reason I always check whether foo.next != null instead of foo != null is i want to be able to set foo.next, if foo is null
+        //then foo.next will raise an error
+        while (l1Incr.next != null) {
+            if (l2Incr == null) {
+                while (l1Incr.next != null) {
+                    if (carry == 0) {
+                        return pointer.next;
                     }
-                    return sum;
+                    carry += l1Incr.val;
+                    l1Incr.val = carry % 10;
+                    carry /= 10;
+                    l1Incr = l1Incr.next;
                 }
-                //if one of the numbers end, but the other doesn't we don't want to set nextDigitOfSum to an empty ListNode
-                else if (firstNumDigit.next == null || secondNumDigit.next == null) {
-                    firstNumDigit = firstNumDigit.next;
-                    secondNumDigit = secondNumDigit.next;
-                    break;
+                carry += l1Incr.val;
+                l1Incr.val = carry%10;
+                carry /= 10;
+                if (carry == 1) {
+                    l1Incr.next = new ListNode(1,null);
                 }
-                else {
-                    nextDigitOfSum.next = new ListNode();
-                    nextDigitOfSum = nextDigitOfSum.next;
-                    firstNumDigit = firstNumDigit.next;
-                    secondNumDigit = secondNumDigit.next;
-                    nextDigitOfSum.val = (carry + firstNumDigit.val + secondNumDigit.val) % 10;
-                    carry = carryCalc(firstNumDigit.val,secondNumDigit.val, carry);
-                }
+                return pointer.next;
             }
+            carry = carry + l1Incr.val + l2Incr.val;
+            l1Incr.val = carry%10;
+            carry /= 10;
+            l1Incr = l1Incr.next;
+            l2Incr = l2Incr.next;
         }
-        ListNode longerNum;
-        if (firstNumDigit != null) {
-            longerNum = firstNumDigit;
+        //this happens regardless
+        carry += l1Incr.val;
+        if (l2Incr == null) {
+            l1Incr.val = carry%10;
+            carry /= 10;
+            if (carry == 1) {
+                l1Incr.next = new ListNode(1,null);
+            }
+            return pointer.next;
         }
-        else {
-            longerNum = secondNumDigit;
-        }
-        if (sum.next == null) {
-            nextDigitOfSum = new ListNode();
-            nextDigitOfSum.val = (carry + longerNum.val) % 10;
-            carry = carryCalc(longerNum.val, 0, carry);
-            longerNum = longerNum.next;
-            sum.next = nextDigitOfSum;
-        }
-        while (longerNum != null) {
-            //nothing is carried, so we can just set the rest of numbers equal to the longer number
+        carry += l2Incr.val;
+        l1Incr.val = carry%10;
+        carry /= 10;
+        l1Incr.next = l2Incr.next;
+        while (l1Incr.next != null) {
             if (carry == 0) {
-                nextDigitOfSum.next = longerNum;
-                return sum;
+                return pointer.next;
             }
-            nextDigitOfSum.next = new ListNode();
-            nextDigitOfSum = nextDigitOfSum.next;
-            nextDigitOfSum.val = (carry + longerNum.val) % 10;
-            carry = carryCalc(longerNum.val, 0, carry);
-            longerNum = longerNum.next;
-        }
-        if (carry != 0) {
-            nextDigitOfSum.next = new ListNode(carry,null);
-        }
+            l1Incr = l1Incr.next;
+            carry += l1Incr.val;
+            l1Incr.val = carry%10;
+            carry /= 10;
 
-
-        return sum;
-    }
-    private static int carryCalc(int num1, int num2, int prevCarry) {
-        if (num1 + num2 + prevCarry >= 10) {
-            return (num1+num2 + prevCarry)/10;
         }
-        return 0;
+        if (carry == 1) {
+            l1Incr.next = new ListNode(1,null);
+        }
+        return pointer.next;
     }
     private static ListNode convertToListNode(int num) {
         int temp = num;
