@@ -1,0 +1,7 @@
+package problem74;
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+
+    }
+}

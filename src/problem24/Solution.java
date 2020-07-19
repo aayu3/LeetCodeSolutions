@@ -9,20 +9,23 @@ class ListNode {
 }
 
 
-public class Solution {
+class Solution {
 
-        public ListNode swapPairs(ListNode head) {
-            if (head.next == null) {
-                return head;
-            }
-            else if (head.next.next == null) {
-                head.next.next = head;
-                head.next = null;
-                return
-            }
-            else {
-
-            }
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
         }
-
+        ListNode temp = head;
+        ListNode res = head.next;
+        while (temp != null && temp.next != null) {
+            // remove this
+            ListNode node = temp;
+            temp = temp.next;
+            node.next = temp.next;
+            temp.next = node;
+            temp = node.next;
+            if (temp != null && temp.next != null) node.next = temp.next;
+        }
+        return res;
+    }
 }
